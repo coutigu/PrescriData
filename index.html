@@ -456,7 +456,7 @@
 
       <div class="secao card-minimizable is-minimized" id="classicHydrationCard" data-minimizable-card>
         <button type="button" class="secao-header card-minimizable-header" id="classicHydrationToggle" data-minimizable-toggle aria-expanded="false" aria-controls="classicHydrationBody">
-          <span>Hidratação Clássica</span>
+          <span>Holliday–Segar Clássica</span>
           <span class="card-minimizable-arrow" aria-hidden="true">▸</span>
         </button>
         <div class="secao-body card-minimizable-body" id="classicHydrationBody">
@@ -506,7 +506,7 @@
           <ul>
             <li>O cálculo do volume diário segue o esquema de Holliday–Segar: 100 mL/kg até 10 kg; 1000 mL + 50 mL/kg entre 10 e 20 kg; 1500 mL + 20 mL/kg acima de 20 kg, com máximo de 3000 mL/dia.</li>
             
-            <li>A seção <strong>Solução Isotônica Personalizada</strong> exibe o volume real calculado por etapa após aplicar a porcentagem de NHD. As etapas permitidas são 1, 2, 3, 4, 6, 8 e 12, escolhidas conforme necessário para manter o S.G. 5% por etapa sem ultrapassar 500 mL. A seção <strong>Solução Isotônica Padrão</strong> exibe a solução padrão (500 + 20 + 10), mantendo o mesmo número de etapas e a mesma taxa de infusão calculados para o paciente. A aba <strong>Hidratação Clássica</strong> calcula SG 5%, NaCl 20% e KCl 10% pelo esquema clássico com tetos de eletrólitos.</li>
+            <li>A seção <strong>Solução Isotônica Personalizada</strong> exibe o volume real calculado por etapa após aplicar a porcentagem de NHD. As etapas permitidas são 1, 2, 3, 4, 6, 8 e 12, escolhidas conforme necessário para manter o S.G. 5% por etapa sem ultrapassar 500 mL. A seção <strong>Solução Isotônica Padrão</strong> exibe a solução padrão (500 + 20 + 10), mantendo o mesmo número de etapas e a mesma taxa de infusão calculados para o paciente. A aba <strong>Holliday–Segar Clássica</strong> calcula SG 5%, NaCl 20% e KCl 10% pelo esquema clássico com tetos de eletrólitos.</li>
           </ul>
         </div>
       </div>
@@ -736,13 +736,20 @@
         const mlPerHour = volumePerDayMl / 24;
 
         if (unit === 'gtt') {
-          const dropsPerMinute = Math.round((mlPerHour * 20) / 60);
+          const rawDropsPerMinute = (mlPerHour * 20) / 60;
+          const dropsPerMinute = Math.round(rawDropsPerMinute);
+          const lowMacroDripWarning = rawDropsPerMinute > 0 && rawDropsPerMinute < 1
+            ? 'Taxa muito baixa para equipo macro. Preferir bomba de infusão em mL/h ou microgotas.'
+            : '';
+
           return {
             unit,
             label: 'Gotas/minuto',
             valueText: `${dropsPerMinute.toLocaleString('pt-BR')} gotas/min`,
             info: 'conversão usando equipo macro de 20 gotas/mL',
-            numericValue: dropsPerMinute
+            numericValue: dropsPerMinute,
+            rawNumericValue: rawDropsPerMinute,
+            warning: lowMacroDripWarning
           };
         }
 
@@ -753,7 +760,8 @@
             label: 'Microgotas/minuto',
             valueText: `${microdropsPerMinute.toLocaleString('pt-BR')} microgotas/min`,
             info: 'conversão usando equipo micro de 60 microgotas/mL',
-            numericValue: microdropsPerMinute
+            numericValue: microdropsPerMinute,
+            warning: ''
           };
         }
 
@@ -762,7 +770,8 @@
           label: 'mL/hora',
           valueText: `${formatNumber(mlPerHour, 1)} mL/h`,
           info: 'taxa contínua das 24 horas',
-          numericValue: mlPerHour
+          numericValue: mlPerHour,
+          warning: ''
         };
       }
 
@@ -896,6 +905,13 @@
         DOM.alertBox.style.display = 'block';
       }
 
+      function showRateWarningIfNeeded(result) {
+        if (result && result.rate && result.rate.warning) {
+          DOM.alertBox.textContent = result.rate.warning;
+          DOM.alertBox.style.display = 'block';
+        }
+      }
+
       function clearError() {
         DOM.alertBox.textContent = '';
         DOM.alertBox.style.display = 'none';
@@ -972,6 +988,7 @@
           const result = calculateHydration(weightKg, rateUnit, nhdPercent);
           STATE.lastCalculation = result;
           renderCalculation(result);
+          showRateWarningIfNeeded(result);
           return result;
         } catch (error) {
           STATE.lastCalculation = null;
@@ -1076,6 +1093,11 @@
         }
         if (classicCapped.potassiumMeqPerDay > CONFIG.classicPotassiumMaxMeqPerDay + 1e-9) {
           failures.push('Hidratação clássica: teto de potássio não aplicado.');
+        }
+
+        const lowMacroRate = calculateHydration(3, 'gtt', 10);
+        if (!lowMacroRate.rate.warning || !/Taxa muito baixa para equipo macro/.test(lowMacroRate.rate.warning)) {
+          failures.push('Gotas/min em baixo volume: alerta de taxa muito baixa não exibido.');
         }
 
         const highNhd = calculateHydration(95, 'mlh', 160);
@@ -1191,7 +1213,7 @@
     <strong>Aviso Legal e Isenção de Responsabilidade:</strong><br>Este software e todas as informações nele contidas são fornecidos exclusivamente com propósitos educacionais e de auxílio à referência médica. ESTE SISTEMA NÃO SUBSTITUI O JULGAMENTO CLÍNICO INDIVIDUAL, A ANAMNESE E O EXAME FÍSICO. As informações aqui apresentadas não devem ser utilizadas isoladamente para o diagnóstico, conduta ou tratamento de pacientes. A responsabilidade final por qualquer decisão clínica, prescrição ou intervenção é exclusiva do profissional de saúde assistente, devidamente habilitado. Os desenvolvedores não garantem a precisão absoluta de todos os dados e isentam-se de responsabilidade por quaisquer danos diretos, indiretos, materiais ou morais que resultem do uso inadequado, interpretação equivocada ou confiança exclusiva nas informações deste sistema. Pacientes e indivíduos leigos que utilizarem este software devem sempre buscar a orientação de um médico qualificado antes de tomar qualquer decisão sobre sua saúde.
   </div>
 
-  <div class="signature-block"><strong>Desenvolvido por Adão L. L. Couto</strong></div>
+  <div class="signature-block"><strong>Desenvolvido por Adão L. L. Couto</strong><br><span class="version-name">1.09.07.16</span></div>
 
   <div class="spacer-3lines" aria-hidden="true"></div>
 
