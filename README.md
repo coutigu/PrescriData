@@ -78,7 +78,7 @@ A partir do script base da calculadora, o sistema foi expandido para uma platafo
 
 ## 🛠️ Tutorial de Instalação
 
-A filosofia do HViso Pro é ser de implantação rápida. Não é necessário configurar um banco de dados MySQL externo, pois ele utiliza SQLite que já vem habilitado por padrão em 99% das hospedagens PHP.
+A filosofia do PrescriData é ser de implantação rápida. Não é necessário configurar um banco de dados MySQL externo, pois ele utiliza SQLite que já vem habilitado por padrão em 99% das hospedagens PHP.
 
 ### Pré-requisitos
 - Servidor Web (Apache recomendado, para suportar o `.htaccess`).
@@ -89,7 +89,7 @@ A filosofia do HViso Pro é ser de implantação rápida. Não é necessário co
 1. **Transferência de Arquivos:** Suba os arquivos desta pasta para o diretório público do seu servidor web (ex: `/var/www/html` ou `public_html` via FTP). 
 2. **Permissões de Escrita:** O PHP precisa ter permissão de escrita e leitura na pasta `/db` para conseguir criar e alterar o arquivo `database.sqlite`. 
    - No Linux, você pode rodar: `chmod -R 775 db/` e garantir que o usuário do servidor web (ex: `www-data`) seja o proprietário.
-3. **Acesse o Sistema:** Acesse a URL do seu sistema pelo navegador (ex: `http://localhost/hviso-pro` ou `https://seusite.com.br`).
+3. **Acesse o Sistema:** Acesse a URL do seu sistema pelo navegador (ex: `http://localhost/PrescriData` ou `https://seusite.com.br`).
 
 ### Primeiro Acesso
 No momento do primeiro acesso, se a pasta `/db` não contiver o banco de dados, o sistema irá gerar as tabelas automaticamente.
