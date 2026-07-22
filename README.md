@@ -1,8 +1,27 @@
-# HViso Pro - Gestão de Hidratação Venosa Pediátrica
+# PrescriData - Gestão de estatísticas prescricionais
 
-O **HViso Pro** é um SaaS/CRM médico desenvolvido para o cálculo preciso e armazenamento epidemiológico de hidratação venosa isotônica pediátrica, visando segurança, auditoria clínica e adequação às leis de proteção de dados (LGPD).
+> **Aviso de Autoria:** O motor lógico (Calculadora de Hidratação em PHP) que compõe o núcleo funcional de cálculos deste sistema foi originalmente criado por **Adão L. L. Couto** 'https://github.com/adaocouto/hviso'. Este sistema web é uma evolução e adaptação arquitetural construída em cima dessa base fundamental.
 
-> **Aviso de Autoria:** O motor lógico (Calculadora de Hidratação em PHP) que compõe o núcleo funcional de cálculos deste sistema foi originalmente criado por **Adão L. L. Couto** 'https://github.com/adaocouto/hviso'. Este sistema web é uma evolução e adaptação arquitetural robusta construída em cima dessa base fundamental.
+# Enquadramento Técnico e Termo de Uso: PrescriData
+
+O **PrescriData** atua estritamente como uma **plataforma arquitetural e motor analítico** para a gestão, estruturação e consolidação estatística de dados prescricionais, não devendo ser interpretado como um protocolo clínico estático, motor de decisão determinístico ou fonte de verdade absoluta para tratamentos médicos.
+
+A finalidade primária deste sistema é fornecer uma **infraestrutura flexível de controle e análise de dados**. Por este motivo, as regras de negócio, matrizes de cálculo e parâmetros de dosagem incorporados no código-fonte original servem apenas como **modelos conceituais e exemplos de implementação (*templates*)**.
+
+Cabe individualmente a cada instituição ou profissional usuário **adaptar, parametrizar e homologar** os algoritmos de cálculo, limites operacionais e lógicas de prescrição conforme as particularidades de seus próprios fluxos de trabalho, requisitos regulatórios e cenários operacionais.
+
+---
+
+> ⚠️ **Nota de Responsabilidade Técnica:**  
+> O software é uma ferramenta de **Business Intelligence (BI) e governança de dados**, e não um dispositivo médico (*SaMD — Software as a Medical Device*). Ele não realiza automação de diagnóstico nem prescrição autônoma, cabendo exclusivamente ao usuário a validação e responsabilidade pelas fórmulas e dados inseridos no ambiente.
+
+---
+
+## 📌 Key Takeaways do Enquadramento do Sistema
+
+* **Natureza da Aplicação:** Sistema de Informação Gerencial (MIS) e Análise Estatística, não um assistente de decisão clínica.
+* **Modelo de Implantação:** Altamente customizável; exige parametrização de regras de cálculo no *setup* por parte do cliente final.
+* **Responsabilidade dos Dados:** A acurácia das variáveis e a adequação das fórmulas ao contexto clínico real dependem da calibração feita pelo usuário.
 
 ---
 
@@ -67,7 +86,7 @@ A filosofia do HViso Pro é ser de implantação rápida. Não é necessário co
 - Extensão `pdo_sqlite` habilitada no seu `php.ini` (geralmente ativa por padrão).
 
 ### Passos para Deploy
-1. **Transferência de Arquivos:** Suba os arquivos desta pasta para o diretório público do seu servidor web (ex: `/var/www/html` ou `public_html` via FTP). Ou utilize git clone https://github.com/coutigu/hviso-Pro-APP.git
+1. **Transferência de Arquivos:** Suba os arquivos desta pasta para o diretório público do seu servidor web (ex: `/var/www/html` ou `public_html` via FTP). 
 2. **Permissões de Escrita:** O PHP precisa ter permissão de escrita e leitura na pasta `/db` para conseguir criar e alterar o arquivo `database.sqlite`. 
    - No Linux, você pode rodar: `chmod -R 775 db/` e garantir que o usuário do servidor web (ex: `www-data`) seja o proprietário.
 3. **Acesse o Sistema:** Acesse a URL do seu sistema pelo navegador (ex: `http://localhost/hviso-pro` ou `https://seusite.com.br`).
